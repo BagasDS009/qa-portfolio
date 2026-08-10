@@ -17,6 +17,7 @@ STATIONS = {
     "SURABAYA": "SGU",
     "SEMARANG": "SMT",
     "CIREBON": "CN",
+    "CIREBON_PRUJAKAN": "CNP",
     "MALANG": "ML",
     "SOLO": "SLO",
     "PURWOKERTO": "PWT",
@@ -27,14 +28,29 @@ STATIONS = {
 # Search Data
 # ============================================================
 def get_departure_date(days_ahead: int = 7) -> str:
-    """Get future departure date in YYYY-MM-DD format."""
-    return (datetime.now() + timedelta(days=days_ahead)).strftime("%Y-%m-%d")
+    """
+    Get future departure day number as string.
+    Used by set_departure_date() which clicks the day in datepicker.
+    Returns: Day number string (e.g., "17", "25")
+    """
+    target = datetime.now() + timedelta(days=days_ahead)
+    return str(target.day)
+
+
+def get_departure_date_parts(days_ahead: int = 7) -> dict:
+    """Get departure date broken into parts (for manual datepicker control)."""
+    target = datetime.now() + timedelta(days=days_ahead)
+    return {
+        "day": str(target.day),
+        "month": target.month,
+        "year": target.year,
+    }
 
 
 VALID_SEARCH = {
     "origin": STATIONS["PASAR_SENEN"],         # PSE
     "destination": STATIONS["BANDUNG"],         # BD
-    "departure_date": get_departure_date(7),
+    "tgl": "24",                               # Tanggal 24
     "adults": 1,
     "babies": 0,
 }
@@ -42,7 +58,7 @@ VALID_SEARCH = {
 VALID_SEARCH_ALT = {
     "origin": STATIONS["GAMBIR"],              # GMR
     "destination": STATIONS["YOGYAKARTA"],     # YK
-    "departure_date": get_departure_date(10),
+    "tgl": "15",                               # Tanggal 15
     "adults": 2,
     "babies": 0,
 }
@@ -50,7 +66,15 @@ VALID_SEARCH_ALT = {
 INVALID_SEARCH = {
     "origin": "XXX",
     "destination": "ZZZ",
-    "departure_date": "2099-12-31",
+    "tgl": "31",
+    "adults": 1,
+    "babies": 0,
+}
+
+VALID_SEARCH_NOT_FOUND = {
+    "origin": STATIONS["GAMBIR"],         # PSE (valid station)
+    "destination": STATIONS["CIREBON_PRUJAKAN"],         # BD (valid station)
+    "tgl": "15",                               # Tanggal 15 (pasti ada di calendar)
     "adults": 1,
     "babies": 0,
 }

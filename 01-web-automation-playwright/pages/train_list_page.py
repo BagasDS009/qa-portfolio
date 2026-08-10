@@ -9,14 +9,14 @@ class TrainListPage(BasePage):
     # ============================================================
     # XPath Locators
     # ============================================================
-    XPATH_TRAIN_LIST = "//div[contains(@class,'train-list') or contains(@class,'schedule')]"
-    XPATH_TRAIN_CARD = "//div[contains(@class,'train-card') or contains(@class,'train-item') or contains(@class,'schedule-item')]"
-    XPATH_TRAIN_NAME = "//span[contains(@class,'train-name') or contains(@class,'nama-kereta')]|//h4[contains(@class,'train')]|//div[contains(@class,'train-name')]"
+    XPATH_TRAIN_LIST = "//*[@class='data-wrapper']/div"
+    XPATH_TRAIN_CARD = "//*[@class='data-wrapper']/div/form/a[@class='card-schedule']"
+    XPATH_TRAIN_NAME = "//*[@class='name']"
     XPATH_DEPARTURE_TIME = "//*[contains(@class,'departure') or contains(@class,'depart-time')]"
     XPATH_ARRIVAL_TIME = "//*[contains(@class,'arrival') or contains(@class,'arrive-time')]"
     XPATH_TRAIN_PRICE = "//*[contains(@class,'price') or contains(@class,'fare') or contains(@class,'harga')]"
     XPATH_SELECT_BUTTON = "//button[contains(text(),'Pilih') or contains(text(),'Select') or contains(@class,'btn-select')]"
-    XPATH_NO_RESULT = "//*[contains(text(),'tidak ditemukan') or contains(text(),'Tidak ada') or contains(@class,'no-result') or contains(@class,'empty')]"
+    XPATH_NO_RESULT = "//p[@style='text-align:center;']"
     XPATH_LOADING = "//*[contains(@class,'loading') or contains(@class,'spinner')]"
 
     def is_train_list_displayed(self) -> bool:
@@ -75,6 +75,10 @@ class TrainListPage(BasePage):
         """Check if no result message is shown."""
         return self.is_visible_xpath(self.XPATH_NO_RESULT)
 
+    def get_no_result_message(self) -> str:
+        """Get the no result message text."""
+        return self.page.locator(f"xpath={self.XPATH_NO_RESULT}").inner_text()
+
     def wait_for_results(self):
         """Wait for search results to load (spinner disappears)."""
         try:
@@ -84,3 +88,8 @@ class TrainListPage(BasePage):
         except Exception:
             pass
         self.page.wait_for_timeout(2000)
+
+    def find_train_by_name(self, train_name: str) -> bool:
+        """Check if a specific train is in the results."""
+        xpath = f"//*[@class='name' and contains(normalize-space(text()), '{train_name}')]"
+        return self.is_visible_xpath(xpath)

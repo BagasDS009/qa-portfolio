@@ -1,10 +1,11 @@
 """
-TC-004: Select Train (Add to Cart)
-TC-005: Change Train Selection (Remove from Cart)
-TC-006: Complete Booking/Checkout
+TC-004: Select Train
+TC-005: Change Train Selection
+TC-006: Complete Booking
 Test cases for end-to-end train booking flow on KAI.
 """
 
+import allure
 import pytest
 from pages.home_page import HomePage
 from pages.train_list_page import TrainListPage
@@ -12,15 +13,17 @@ from pages.passenger_page import PassengerPage
 from pages.seat_page import SeatPage
 from pages.payment_page import PaymentPage
 from pages.confirmation_page import ConfirmationPage
-from tests.test_data import VALID_SEARCH, CONTACT_PERSON, PASSENGER_1, get_departure_date
+from tests.test_data import VALID_SEARCH, CONTACT_PERSON, PASSENGER_1
 
 
+@allure.epic("KAI Booking")
+@allure.feature("Booking Flow")
 class TestBookingFlow:
     """Test suite for train booking/checkout flow."""
 
     @pytest.fixture(autouse=True)
-    def setup(self, page, login):
-        """Setup: Login and initialize page objects."""
+    def setup(self, page):
+        """Setup: Navigate to home page (no login needed)."""
         self.home_page = HomePage(page)
         self.train_list_page = TrainListPage(page)
         self.passenger_page = PassengerPage(page)
@@ -32,9 +35,9 @@ class TestBookingFlow:
         """Helper: Search train with valid data."""
         self.home_page.navigate_to_home()
         self.home_page.search_train(
-            origin=VALID_SEARCH["origin"],             # PSE
-            destination=VALID_SEARCH["destination"],   # BD
-            date=get_departure_date(7),
+            origin=VALID_SEARCH["origin"],
+            destination=VALID_SEARCH["destination"],
+            tgl=VALID_SEARCH["tgl"],
             adults=VALID_SEARCH["adults"],
         )
         self.train_list_page.wait_for_results()
@@ -52,83 +55,78 @@ class TestBookingFlow:
         )
         self.passenger_page.click_continue()
 
+    @allure.story("Select Train")
+    @allure.title("TC-004: Select train from search results")
+    @allure.severity(allure.severity_level.CRITICAL)
     @pytest.mark.smoke
     def test_select_train(self, page):
-        """
-        TC-004: Select Train
-        Verify user can select a train from search results.
-        """
-        self._search_train()
-        assert self.train_list_page.get_available_trains_count() > 0, (
-            "No trains available to select"
-        )
+        """Verify user can select a train from search results."""
+        with allure.step("Search for available trains"):
+            self._search_train()
 
-        train_name = self.train_list_page.get_train_name(0)
-        self.train_list_page.select_first_train()
+        with allure.step("Verify trains are available"):
+            assert self.train_list_page.get_available_trains_count() > 0, (
+                "No trains available to select"
+            )
 
-        assert self.passenger_page.is_passenger_form_displayed(), (
-            f"Passenger form not shown after selecting: {train_name}"
-        )
+        with allure.step("Select first available train"):
+            train_name = self.train_list_page.find_train_by_name(0)
+            allure.attach(train_name, name="Selected Train", attachment_type=allure.attachment_type.TEXT)
+            self.train_list_page.select_first_train()
 
+        with allure.step("Verify passenger form is displayed"):
+            assert self.passenger_page.is_passenger_form_displayed(), (
+                f"Passenger form not shown after selecting: {train_name}"
+            )
+
+    @allure.story("Change Selection")
+    @allure.title("TC-005: Change train selection")
+    @allure.severity(allure.severity_level.NORMAL)
     def test_select_different_train(self, page):
-        """
-        TC-005: Change Train Selection
-        Verify user can go back and select a different train.
-        """
-        self._search_train()
+        """Verify user can go back and select a different train."""
+        with allure.step("Search for available trains"):
+            self._search_train()
+
         trains_count = self.train_list_page.get_available_trains_count()
 
         if trains_count >= 2:
-            self.train_list_page.select_first_train()
-            self.passenger_page.click_back()
+            with allure.step("Select first train then go back"):
+                self.train_list_page.select_first_train()
+                self.passenger_page.click_back()
 
-            self.train_list_page.wait_for_results()
-            second_train = self.train_list_page.get_train_name(1)
-            self.train_list_page.select_train_by_index(1)
+            with allure.step("Select second train"):
+                self.train_list_page.wait_for_results()
+                second_train = self.train_list_page.find_train_by_name(1)
+                self.train_list_page.select_train_by_index(1)
 
-            assert self.passenger_page.is_passenger_form_displayed(), (
-                f"Passenger form not shown after selecting: {second_train}"
-            )
+            with allure.step("Verify passenger form for new selection"):
+                assert self.passenger_page.is_passenger_form_displayed(), (
+                    f"Passenger form not shown after selecting: {second_train}"
+                )
         else:
             pytest.skip("Only 1 train available, cannot test change selection")
 
+    @allure.story("Complete Booking")
+    @allure.title("TC-006: Complete end-to-end booking flow")
+    @allure.severity(allure.severity_level.CRITICAL)
     @pytest.mark.smoke
     def test_complete_booking_flow(self, page):
-        """
-        TC-006: Complete Checkout/Booking Flow
-        Verify full flow: Search → Select → Passenger → Seat → Payment.
-        """
-        # Step 1-2: Search and select train
-        self._search_train()
-        self.train_list_page.select_first_train()
+        """Verify full flow: Search → Select → Passenger → Seat → Payment."""
+        with allure.step("Step 1: Search for trains"):
+            self._search_train()
 
-        # Step 3: Fill passenger data
-        self._fill_passenger_data()
+        with allure.step("Step 2: Select first available train"):
+            self.train_list_page.select_first_train()
 
-        # Step 4: Seat selection (skip if available)
-        if self.seat_page.is_seat_map_displayed():
-            self.seat_page.select_first_available_seat()
-            self.seat_page.confirm_seat()
+        with allure.step("Step 3: Fill passenger data"):
+            self._fill_passenger_data()
 
-        # Step 5: Verify payment page
-        assert self.payment_page.is_payment_page_displayed(), (
-            "Payment page not displayed after completing booking flow"
-        )
+        with allure.step("Step 4: Handle seat selection"):
+            if self.seat_page.is_seat_map_displayed():
+                self.seat_page.select_first_available_seat()
+                self.seat_page.confirm_seat()
 
-    def test_booking_preserves_train_info(self, page):
-        """
-        TC-006b: Verify booking details preserved through flow.
-        """
-        self._search_train()
-        selected_train = self.train_list_page.get_train_name(0)
-        self.train_list_page.select_first_train()
-
-        self._fill_passenger_data()
-
-        if self.seat_page.is_seat_map_displayed():
-            self.seat_page.select_first_available_seat()
-            self.seat_page.confirm_seat()
-
-        assert self.payment_page.is_payment_page_displayed(), (
-            f"Payment page not reached after booking {selected_train}"
-        )
+        with allure.step("Step 5: Verify payment page"):
+            assert self.payment_page.is_payment_page_displayed(), (
+                "Payment page not displayed after completing booking flow"
+            )

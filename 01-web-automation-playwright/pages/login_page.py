@@ -9,14 +9,14 @@ class LoginPage(BasePage):
     # ============================================================
     # XPath Locators
     # ============================================================
-    XPATH_USERNAME = "//input[@name='username' or @id='username' or @type='text']"
-    XPATH_PASSWORD = "//input[@type='password']"
+    XPATH_USERNAME = '//input[@type="username"]'
+    XPATH_PASSWORD = '//input[@type="password"]'
     XPATH_LOGIN_BUTTON = '//span[@class="btn-text"]'
-    XPATH_ERROR_MESSAGE = "//div[contains(@class,'iziToast') and contains(@class,'iziToast-color-red')]"
+    XPATH_ERROR_MESSAGE = '//div[contains(@class,"iziToast") and contains(@class,"iziToast-color-red")]'
     XPATH_PROFILE_ICON = '//span[@class="input-group-addon"]'
-    XPATH_REGISTER_LINK = "//a[normalize-space()='Registrasi']"
-    XPATH_FORGOT_PASSWORD = "//a[normalize-space()='Lupa password']"
-    XPATH_CLOSE_MODAL = "//button[contains(@class,'close') or @aria-label='Close']"
+    XPATH_REGISTER_LINK = '//a[normalize-space()="Registrasi"]'
+    XPATH_FORGOT_PASSWORD = '//a[normalize-space()="Lupa password"]'
+    XPATH_CLOSE_MODAL = '//button[contains(@class,"close") or @aria-label="Close"]'
 
 
 

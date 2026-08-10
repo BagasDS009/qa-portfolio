@@ -5,6 +5,10 @@ pytest-playwright>=0.5.2
 
 # Reporting
 pytest-html>=4.1.1
+allure-pytest>=2.13.0
 
 # Utilities
 python-dotenv>=1.0.1
+
+# Anti-Detection / Stealth
+playwright-stealth>=1.0.6
