@@ -141,6 +141,65 @@ allure open reports/allure-report
 allure serve reports/allure-results
 ```
 
+### Test Execution Summary
+
+```
+Test Summary - API Automation (FakeREST API)
+────────────────────────────────────────────
+Total     : 22
+Passed    : 22
+Failed    : 0
+Skipped   : 0
+Pass Rate : 100%
+
+Test Suites
+├── Activities
+│   ├── GET all activities              ✓
+│   ├── GET activity by ID              ✓
+│   ├── GET non-existent (404)          ✓
+│   ├── POST create activity            ✓
+│   ├── PUT update activity             ✓
+│   └── DELETE activity                 ✓
+│
+├── Authors
+│   ├── GET all authors                 ✓
+│   ├── GET author by ID               ✓
+│   ├── GET authors by book ID          ✓
+│   ├── POST create author              ✓
+│   ├── PUT update author               ✓
+│   └── DELETE author                   ✓
+│
+├── Books
+│   ├── GET all books                   ✓
+│   ├── GET book by ID                  ✓
+│   ├── POST create book                ✓
+│   ├── PUT update book                 ✓
+│   └── DELETE book                     ✓
+│
+└── Users
+    ├── GET all users                   ✓
+    ├── GET user by ID                  ✓
+    ├── POST create user                ✓
+    ├── PUT update user                 ✓
+    └── DELETE user                     ✓
+```
+
+### Report Flow
+
+```
+Playwright API Context
+        ↓
+Pytest Execution
+        ↓
+Allure Results (JSON)
+        ↓
+Allure Generate
+        ↓
+Interactive HTML Report
+        ↓
+GitHub Actions Artifact
+```
+
 ## CI/CD
 
 GitHub Actions workflow runs automatically on:

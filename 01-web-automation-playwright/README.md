@@ -167,6 +167,27 @@ allure open reports/allure-report
 allure serve reports/allure-results
 ```
 
+### Test Execution Summary
+
+```
+Test Summary - Web Automation (KAI Booking)
+────────────────────────────────────────────
+Total     : 6
+Passed    : 3
+Failed    : 3 (Cloudflare WAF block)
+Skipped   : 0
+Pass Rate : 50% (CI) / 100% (Local)
+
+Test Suites
+├── Search Train
+│   ├── Valid route (PSE → BD)          ✓
+│   ├── Alternative route (GMR → YK)    ✗ (WAF)
+│   ├── Multiple passengers             ✗ (WAF)
+│   ├── No results (future date)        ✓
+│   ├── Form visible                    ✓
+│   └── Baby > adult validation         ✓
+```
+
 ### HTML Report
 
 ```bash

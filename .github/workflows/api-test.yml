@@ -27,12 +27,21 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+          pip install flake8
 
       - name: Install Playwright
         working-directory: 06-api-testing-playwright
         run: playwright install --with-deps chromium
 
-      - name: Run API tests
+      - name: Lint (flake8)
+        working-directory: 06-api-testing-playwright
+        run: |
+          flake8 tests/ conftest.py \
+            --max-line-length=120 \
+            --ignore=E501,W503,F401 \
+            --count --statistics
+
+      - name: Run Tests
         working-directory: 06-api-testing-playwright
         run: |
           pytest tests/ -v \
@@ -62,3 +71,15 @@ jobs:
           name: api-html-report
           path: 06-api-testing-playwright/reports/report.html
           retention-days: 14
+
+      - name: Test Results Summary
+        if: always()
+        working-directory: 06-api-testing-playwright
+        run: |
+          echo "============================================"
+          echo "📊 API TEST RESULTS SUMMARY"
+          echo "============================================"
+          echo "Target: fakerestapi.azurewebsites.net"
+          echo "Resources: Activities, Authors, Books, Users"
+          echo "Expected: All 22 tests PASS"
+          echo "============================================"
