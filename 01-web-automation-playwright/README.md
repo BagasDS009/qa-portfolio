@@ -186,6 +186,22 @@ booking.kai.id uses Cloudflare WAF. This project implements:
 | Realistic Viewport | 1366x768 (common laptop resolution) |
 | Locale/Timezone | id-ID, Asia/Jakarta |
 
+## CI/CD Note
+
+> **Known Limitation:** Some tests fail in GitHub Actions CI because booking.kai.id is protected by **Cloudflare Enterprise WAF**, which blocks requests from datacenter IPs (including GitHub-hosted runners). This is a real-world challenge when automating production websites.
+>
+> **Local execution passes all tests** using residential IP. The CI pipeline is configured to demonstrate the framework capability — partial failures are expected and documented.
+>
+> **Possible solutions for full CI pass:**
+> - Self-hosted runner (uses your local machine IP)
+> - Residential proxy integration (BrightData, Oxylabs)
+> - Target a staging/test environment without WAF
+
+| Environment | Result | Reason |
+|-------------|--------|--------|
+| Local (Mac) | All tests pass | Residential IP, not blocked |
+| GitHub Actions | Partial pass (3/6) | Cloudflare blocks datacenter IPs |
+
 ## Design Decisions
 
 1. **Page Object Model** - Separates page structure from test logic
