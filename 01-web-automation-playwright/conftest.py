@@ -44,9 +44,13 @@ def pytest_addoption(parser):
 @pytest.fixture
 def browser():
     """Launch a fresh browser for each test, then close it completely."""
+    import os
+    # CI environment = headless, local = headed
+    is_ci = os.getenv("CI", "false").lower() == "true"
+
     with sync_playwright() as p:
         bwr = p.chromium.launch(
-            headless=False,
+            headless=is_ci,
             args=[
                 "--disable-blink-features=AutomationControlled",
                 "--disable-infobars",
