@@ -1,0 +1,64 @@
+name: API Automation Tests - FakeREST API
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  api-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        working-directory: 06-api-testing-playwright
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Install Playwright
+        working-directory: 06-api-testing-playwright
+        run: playwright install --with-deps chromium
+
+      - name: Run API tests
+        working-directory: 06-api-testing-playwright
+        run: |
+          pytest tests/ -v \
+            --alluredir=reports/allure-results \
+            --html=reports/report.html \
+            --self-contained-html
+
+      - name: Generate Allure Report
+        if: always()
+        uses: simple-elf/allure-report-action@master
+        with:
+          allure_results: 06-api-testing-playwright/reports/allure-results
+          allure_report: 06-api-testing-playwright/reports/allure-report
+
+      - name: Upload Allure Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: api-allure-report
+          path: 06-api-testing-playwright/reports/allure-report
+          retention-days: 14
+
+      - name: Upload HTML Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: api-html-report
+          path: 06-api-testing-playwright/reports/report.html
+          retention-days: 14
