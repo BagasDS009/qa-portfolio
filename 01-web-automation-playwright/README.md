@@ -1,9 +1,10 @@
-# 🚆 Web Automation - KAI Booking (booking.kai.id)
+# Web Automation - KAI Booking (booking.kai.id)
 
-![Python](https://img.shields.io/badge/Python-3.11-blue?logo=python)
-![Playwright](https://img.shields.io/badge/Playwright-1.44-green?logo=playwright)
-![Pytest](https://img.shields.io/badge/Pytest-8.2-orange?logo=pytest)
+![Python](https://img.shields.io/badge/Python-3.11+-blue?logo=python)
+![Playwright](https://img.shields.io/badge/Playwright-1.49+-green?logo=playwright)
+![Pytest](https://img.shields.io/badge/Pytest-8.2+-orange?logo=pytest)
 ![CI](https://img.shields.io/badge/CI-GitHub_Actions-blue?logo=githubactions)
+![Allure](https://img.shields.io/badge/Report-Allure-yellow)
 
 ## Overview
 
@@ -14,75 +15,104 @@ End-to-end web automation testing untuk **PT Kereta Api Indonesia (KAI)** online
 ## Test Flow
 
 ```
-Login → Search Train → Select Train → Passenger Data → Seat Selection → Payment → Confirmation
+Homepage → Search Train → Select Train → Passenger Data → Seat Selection → Payment → Confirmation
 ```
 
 ## Tech Stack
 
 | Technology | Purpose |
 |-----------|---------|
-| Python 3.11 | Programming language |
+| Python 3.11+ | Programming language |
 | Playwright | Browser automation framework |
 | Pytest | Test runner & assertions |
 | Page Object Model | Design pattern |
+| Allure Report | Test reporting |
+| playwright-stealth | Anti-detection / bot bypass |
 | GitHub Actions | CI/CD pipeline |
 | pytest-html | HTML test reports |
-| python-dotenv | Environment config |
 
 ## Project Structure
 
 ```
 01-web-automation-playwright/
-├── .github/
-│   └── workflows/
-│       └── test.yml            # CI pipeline (smoke + regression)
-├── pages/                      # Page Object Model classes
-│   ├── __init__.py
-│   ├── base_page.py            # Base class with shared methods
-│   ├── login_page.py           # Login page actions
-│   ├── home_page.py            # Home/search page actions
-│   ├── train_list_page.py      # Train search results
-│   ├── passenger_page.py       # Passenger data form
-│   ├── seat_page.py            # Seat selection
-│   ├── payment_page.py         # Payment page
-│   └── confirmation_page.py    # Booking confirmation
-├── tests/                      # Test cases
-│   ├── __init__.py
-│   ├── test_login.py           # TC-001, TC-002
-│   ├── test_search.py          # TC-003
-│   ├── test_booking.py         # TC-004, TC-005, TC-006
-│   ├── test_validation.py      # TC-007
-│   └── test_logout.py          # TC-008
-├── utils/                      # Utilities
-│   ├── __init__.py
-│   ├── config.py               # Configuration management
-│   └── helpers.py              # Helper functions
-├── reports/                    # Generated test reports
-├── conftest.py                 # Pytest fixtures & hooks
-├── pytest.ini                  # Pytest configuration
-├── requirements.txt            # Python dependencies
-├── .env.example                # Environment template
+├── .github/workflows/test.yml      # CI pipeline
+├── pages/                           # Page Object Model classes
+│   ├── base_page.py                 # Base class (shared methods, human delay)
+│   ├── login_page.py                # Login page
+│   ├── home_page.py                 # Home/search page (datepicker, station dropdown)
+│   ├── train_list_page.py           # Search results
+│   ├── passenger_page.py            # Passenger data form
+│   ├── seat_page.py                 # Seat selection
+│   ├── payment_page.py              # Payment page
+│   └── confirmation_page.py         # Booking confirmation
+├── tests/                           # Test cases
+│   ├── test_data.py                 # Centralized test data
+│   ├── test_login.py                # TC-001, TC-002
+│   ├── test_search.py               # TC-003
+│   ├── test_booking.py              # TC-004, TC-005, TC-006
+│   ├── test_validation.py           # TC-007
+│   └── test_logout.py               # TC-008
+├── reports/                         # Generated reports (gitignored)
+├── conftest.py                      # Fixtures, stealth, fresh browser per test
+├── pytest.ini                       # Pytest + Allure config
+├── requirements.txt                 # Dependencies
+├── .env.example                     # Environment template
 └── .gitignore
 ```
 
 ## Test Cases
 
-| ID | Test Case | Priority | Module |
-|----|-----------|----------|--------|
-| TC-001 | Valid Login | High | Login |
-| TC-002 | Invalid Login (wrong password, wrong email, empty fields) | High | Login |
-| TC-003 | Search Train (valid route, swap stations, no results) | High | Search |
-| TC-004 | Select Train (add to booking) | High | Booking |
-| TC-005 | Change Train Selection (remove/change) | Medium | Booking |
-| TC-006 | Complete Booking/Checkout Flow | High | Booking |
-| TC-007 | Required Field Validation (passenger form) | High | Validation |
-| TC-008 | Logout (session end, re-login) | Medium | Auth |
+### TC-001 & TC-002: Login (test_login.py)
+
+| ID | Test Case | Severity |
+|----|-----------|----------|
+| TC-001 | Valid login with correct credentials | Critical |
+| TC-002 | Invalid login - wrong password | Critical |
+| TC-002b | Invalid login - unregistered email | Normal |
+| TC-002c | Invalid login - empty fields | Normal |
+
+### TC-003: Search Train (test_search.py)
+
+| ID | Test Case | Severity |
+|----|-----------|----------|
+| TC-003 | Search train valid route (PSE → BD) | Critical |
+| TC-003b | Search train alternative route (GMR → YK) | Normal |
+| TC-003c | Search with multiple adult passengers (2 adults) | Normal |
+| TC-003d | Search with date beyond booking window (no results) | Normal |
+| TC-003e | Search form visible on homepage | Blocker |
+| TC-003f | Baby cannot exceed adult passengers (tooltip validation) | Normal |
+
+### TC-004, TC-005, TC-006: Booking Flow (test_booking.py)
+
+| ID | Test Case | Severity |
+|----|-----------|----------|
+| TC-004 | Select train from search results | Critical |
+| TC-005 | Change train selection (go back, pick another) | Normal |
+| TC-006 | Complete end-to-end booking flow | Critical |
+
+### TC-007: Form Validation (test_validation.py)
+
+| ID | Test Case | Severity |
+|----|-----------|----------|
+| TC-007 | Submit empty passenger form - validation errors shown | Critical |
+| TC-007b | Contact name required - empty name rejected | Normal |
+| TC-007c | ID number required - empty ID rejected | Normal |
+| TC-007d | Search without origin station - cannot proceed | Normal |
+
+### TC-008: Logout (test_logout.py)
+
+| ID | Test Case | Severity |
+|----|-----------|----------|
+| TC-008 | Successful logout | Critical |
+| TC-008b | Cannot access protected pages after logout | Normal |
+| TC-008c | Re-login after logout | Normal |
 
 ## Setup & Installation
 
 ### Prerequisites
 - Python 3.10+
 - pip
+- Allure CLI (`brew install allure`)
 
 ### Installation
 
@@ -92,9 +122,8 @@ git clone https://github.com/BagasDS009/qa-portfolio.git
 cd qa-portfolio/01-web-automation-playwright
 
 # Create virtual environment
-python -m venv venv
-source venv/bin/activate  # Linux/Mac
-# venv\Scripts\activate   # Windows
+python3 -m venv venv
+source venv/bin/activate
 
 # Install dependencies
 pip install -r requirements.txt
@@ -106,9 +135,7 @@ playwright install chromium
 ### Configuration
 
 ```bash
-# Copy environment template
 cp .env.example .env
-
 # Edit .env with your KAI credentials
 ```
 
@@ -118,57 +145,55 @@ cp .env.example .env
 # Run all tests
 pytest
 
-# Run smoke tests only
-pytest -m smoke
-
 # Run specific test file
-pytest tests/test_login.py
+pytest tests/test_search.py -v
 
-# Run with specific browser
-pytest --browser chromium
-pytest --browser firefox
+# Run single test case
+pytest tests/test_search.py::TestSearchTrain::test_search_train_valid_route -v
 
-# Run headed (visible browser)
-pytest --headed
-
-# Run with verbose output
-pytest -v --tb=long
-
-# Generate HTML report
-pytest --html=reports/report.html --self-contained-html
+# Run smoke tests only
+pytest -m smoke -v
 ```
-
-## CI/CD Pipeline
-
-GitHub Actions workflow runs automatically on:
-- **Push** to `main` / `develop` branch
-- **Pull Request** to `main`
-- **Scheduled** daily at 08:00 WIB (regression)
-- **Manual trigger** via workflow_dispatch
-
-### GitHub Secrets Required
-
-| Secret | Description |
-|--------|-------------|
-| `BASE_URL` | Target URL (https://booking.kai.id) |
-| `KAI_USER` | Test account email |
-| `KAI_PASSWORD` | Test account password |
 
 ## Reports
 
-Test reports are generated automatically:
-- **HTML Report:** `reports/report.html`
-- **Screenshots on failure:** `reports/screenshots/`
-- **CI Artifacts:** Downloadable from GitHub Actions
+### Allure Report (auto-generated after each run)
+
+```bash
+# View report (auto-opens in browser)
+allure open reports/allure-report
+
+# Or serve live
+allure serve reports/allure-results
+```
+
+### HTML Report
+
+```bash
+open reports/report.html
+```
+
+## Anti-Detection Strategy
+
+booking.kai.id uses Cloudflare WAF. This project implements:
+
+| Layer | Implementation |
+|-------|---------------|
+| Stealth Plugin | `playwright-stealth` - patches navigator.webdriver, chrome runtime |
+| Fresh Browser | New browser instance per test (avoids session fingerprinting) |
+| Human Delays | Random delays between actions (300-5000ms) |
+| Custom User-Agent | Real Chrome user-agent string |
+| Realistic Viewport | 1366x768 (common laptop resolution) |
+| Locale/Timezone | id-ID, Asia/Jakarta |
 
 ## Design Decisions
 
-1. **Page Object Model** - Separates page structure from test logic for better maintainability
-2. **BasePage class** - Common methods (click, fill, wait) to reduce code duplication
-3. **Fixtures** - Reusable test setup (login, test data) via pytest fixtures
-4. **Screenshot on failure** - Auto-capture for debugging failed tests
-5. **Environment config** - Secrets stored in `.env`, not hardcoded
-6. **Multi-browser CI** - Tests run on Chromium & Firefox in parallel
+1. **Page Object Model** - Separates page structure from test logic
+2. **XPath Locators** - Real selectors from the actual website (inspected via DevTools)
+3. **Centralized Test Data** - All data in `test_data.py` for easy maintenance
+4. **Fresh Browser Per Test** - Close & reopen to avoid Cloudflare detection
+5. **Allure Report** - Professional reporting with steps, screenshots, severity
+6. **Screenshot on Failure** - Auto-capture & attach to Allure on failed tests
 
 ## Author
 
