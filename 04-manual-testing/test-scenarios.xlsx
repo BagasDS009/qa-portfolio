@@ -1,0 +1,16 @@
+Test Scenario ID|Module|Test Scenario|Priority|Status
+TS-001|Login|Verify user can login with valid credentials|High|Pass
+TS-002|Login|Verify error message for invalid credentials|High|Pass
+TS-003|Login|Verify account lockout after 5 failed attempts|Medium|Pass
+TS-004|Registration|Verify new user registration with valid data|High|Pass
+TS-005|Registration|Verify duplicate email validation|Medium|Pass
+TS-006|Product|Verify product listing displays correctly|High|Pass
+TS-007|Product|Verify product search functionality|High|Pass
+TS-008|Product|Verify product filtering by category|Medium|Pass
+TS-009|Cart|Verify adding product to cart|High|Pass
+TS-010|Cart|Verify removing product from cart|High|Pass
+TS-011|Cart|Verify updating product quantity|Medium|Pass
+TS-012|Checkout|Verify complete checkout flow|High|Pass
+TS-013|Checkout|Verify payment processing|High|Pass
+TS-014|Checkout|Verify order confirmation email|Medium|Fail
+TS-015|Order|Verify order history displays correctly|Medium|Pass

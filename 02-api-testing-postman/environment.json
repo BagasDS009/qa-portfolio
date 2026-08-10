@@ -1,0 +1,27 @@
+{
+  "id": "example-environment-id",
+  "name": "QA Portfolio - Environment",
+  "values": [
+    {
+      "key": "base_url",
+      "value": "https://reqres.in",
+      "enabled": true
+    },
+    {
+      "key": "user_email",
+      "value": "eve.holt@reqres.in",
+      "enabled": true
+    },
+    {
+      "key": "user_password",
+      "value": "pistol",
+      "enabled": true
+    },
+    {
+      "key": "auth_token",
+      "value": "",
+      "enabled": true
+    }
+  ],
+  "_postman_variable_scope": "environment"
+}

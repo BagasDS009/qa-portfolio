@@ -1,0 +1,11 @@
+TC ID|Test Scenario|Test Case|Precondition|Test Steps|Test Data|Expected Result|Actual Result|Status|Priority
+TC-001|TS-001|Login with valid credentials|User is registered|1. Navigate to login page 2. Enter valid email 3. Enter valid password 4. Click Login|Email: user@test.com Password: Test@123|User redirected to dashboard|User redirected to dashboard|Pass|High
+TC-002|TS-002|Login with invalid password|User is registered|1. Navigate to login page 2. Enter valid email 3. Enter invalid password 4. Click Login|Email: user@test.com Password: wrong123|Error message displayed|Error message displayed|Pass|High
+TC-003|TS-002|Login with empty fields|None|1. Navigate to login page 2. Leave fields empty 3. Click Login|Email: (empty) Password: (empty)|Validation error shown|Validation error shown|Pass|High
+TC-004|TS-004|Register with valid data|None|1. Navigate to register page 2. Fill all fields 3. Click Register|Name: John Doe Email: john@test.com Password: Secure@123|Registration successful|Registration successful|Pass|High
+TC-005|TS-005|Register with duplicate email|Email already exists|1. Navigate to register page 2. Enter existing email 3. Click Register|Email: existing@test.com|Error: email already exists|Error: email already exists|Pass|Medium
+TC-006|TS-009|Add product to cart|User logged in|1. Browse products 2. Click Add to Cart on item 3. Verify cart badge|Product: Laptop|Cart badge shows 1|Cart badge shows 1|Pass|High
+TC-007|TS-010|Remove product from cart|Item in cart|1. Go to cart 2. Click Remove on item 3. Verify item removed|N/A|Item removed from cart|Item removed from cart|Pass|High
+TC-008|TS-012|Complete checkout|Items in cart|1. Go to cart 2. Click Checkout 3. Fill address 4. Select payment 5. Confirm order|Address: 123 Main St Payment: Credit Card|Order placed successfully|Order placed successfully|Pass|High
+TC-009|TS-014|Order confirmation email|Order placed|1. Complete checkout 2. Check email inbox 3. Verify email content|N/A|Confirmation email received within 5 min|Email not received after 10 min|Fail|Medium
+TC-010|TS-007|Search product by name|User logged in|1. Click search bar 2. Type product name 3. Press Enter|Search: "Laptop"|Matching products displayed|Matching products displayed|Pass|High

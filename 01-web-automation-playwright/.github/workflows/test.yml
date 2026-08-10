@@ -1,0 +1,120 @@
+name: Web Automation Tests - KAI Booking
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+  schedule:
+    # Run daily at 08:00 WIB (01:00 UTC)
+    - cron: '0 1 * * *'
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    strategy:
+      matrix:
+        browser: [chromium, firefox]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        working-directory: 01-web-automation-playwright
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Install Playwright browsers
+        working-directory: 01-web-automation-playwright
+        run: playwright install --with-deps ${{ matrix.browser }}
+
+      - name: Run smoke tests
+        working-directory: 01-web-automation-playwright
+        env:
+          BASE_URL: ${{ secrets.BASE_URL }}
+          KAI_USER: ${{ secrets.KAI_USER }}
+          KAI_PASSWORD: ${{ secrets.KAI_PASSWORD }}
+          HEADLESS: 'true'
+        run: |
+          pytest tests/ -m smoke \
+            --browser ${{ matrix.browser }} \
+            --html=reports/report-${{ matrix.browser }}.html \
+            --self-contained-html \
+            --tb=short \
+            -v
+
+      - name: Upload test report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-report-${{ matrix.browser }}
+          path: 01-web-automation-playwright/reports/
+          retention-days: 14
+
+      - name: Upload screenshots on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: failure-screenshots-${{ matrix.browser }}
+          path: 01-web-automation-playwright/reports/screenshots/
+          retention-days: 7
+
+  regression:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    needs: test
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        working-directory: 01-web-automation-playwright
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Install Playwright browsers
+        working-directory: 01-web-automation-playwright
+        run: playwright install --with-deps chromium
+
+      - name: Run full regression
+        working-directory: 01-web-automation-playwright
+        env:
+          BASE_URL: ${{ secrets.BASE_URL }}
+          KAI_USER: ${{ secrets.KAI_USER }}
+          KAI_PASSWORD: ${{ secrets.KAI_PASSWORD }}
+          HEADLESS: 'true'
+        run: |
+          pytest tests/ \
+            --browser chromium \
+            --html=reports/regression-report.html \
+            --self-contained-html \
+            --tb=short \
+            -v
+
+      - name: Upload regression report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: regression-report
+          path: 01-web-automation-playwright/reports/
+          retention-days: 30
