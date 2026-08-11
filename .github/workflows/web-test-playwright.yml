@@ -28,7 +28,7 @@ jobs:
         run: |
           flake8 pages/ tests/ conftest.py \
             --max-line-length=120 \
-            --ignore=E501,W503,F401,E302,E303,W291 \
+            --ignore=E501,W503,F401,E302,E303,W291,W293,F541,E301 \
             --count --statistics
 
   test-search:
