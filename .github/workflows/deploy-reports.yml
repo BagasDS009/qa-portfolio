@@ -47,9 +47,9 @@ jobs:
 
       - name: Install Allure CLI
         run: |
-          sudo apt-get update
-          sudo apt-get install -y default-jre
-          curl -o allure.tgz -Ls https://github.com/allure-framework/allure2/releases/download/2.27.0/allure-2.27.0.tgz
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq default-jre > /dev/null
+          curl -sLo allure.tgz https://github.com/allure-framework/allure2/releases/download/2.27.0/allure-2.27.0.tgz
           tar -xzf allure.tgz
           sudo mv allure-2.27.0 /opt/allure
           sudo ln -s /opt/allure/bin/allure /usr/local/bin/allure
@@ -59,13 +59,7 @@ jobs:
           mkdir -p combined-results
           cp -r allure-results/api-playwright/* combined-results/ 2>/dev/null || true
           cp -r allure-results/mobile/* combined-results/ 2>/dev/null || true
-          allure generate combined-results -o allure-report --clean
-
-      - name: Create index page
-        run: |
-          mkdir -p public
-          cp -r allure-report/* public/
-          echo '<html><head><meta http-equiv="refresh" content="0;url=index.html"></head></html>' > public/redirect.html
+          allure generate combined-results -o public --clean
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
