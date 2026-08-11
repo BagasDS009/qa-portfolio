@@ -9,20 +9,29 @@ class PassengerPage(BasePage):
     # ============================================================
     # XPath Locators - Contact Person
     # ============================================================
-    XPATH_CONTACT_NAME = "//input[contains(@name,'contact_name') or contains(@placeholder,'Nama Pemesan') or @id='contactName']"
-    XPATH_CONTACT_PHONE = "//input[contains(@name,'contact_phone') or contains(@placeholder,'Telepon') or @id='contactPhone']"
-    XPATH_CONTACT_EMAIL = "//input[contains(@name,'contact_email') or contains(@placeholder,'Email') or @id='contactEmail']"
+    XPATH_CONTACT_NAME_TITLE = "//select[@id='pemesan_title' and @name='pemesan_title']"
+    XPATH_CONTACT_PHONE = "//input[@id='pemesan_nohp' and @name='pemesan_nohp']"
+    XPATH_CONTACT_EMAIL = "//input[@id='pemesan_email' and @name='pemesan_email']"
+    XPATH_CONTACT_NAME = "//input[@id='pemesan_nama' and @name='pemesan_nama']"
+    XPATH_CONTACT_ID_TYPE = "//select[@id='pemesan_tandapengenal' and @name='pemesan_tandapengenal']"
+    XPATH_CONTACT_ID_NUMBER = "//input[@id='pemesan_notandapengenal']"
+    XPATH_CONTACT_ALAMAT = "//input[@id='pemesan_alamat' and @name='pemesan_alamat']"
 
     # XPath Locators - Passenger Info
-    XPATH_PASSENGER_NAME = "//input[contains(@name,'passenger_name') or contains(@placeholder,'Nama Penumpang') or contains(@name,'passengername')]"
-    XPATH_PASSENGER_ID_TYPE = "//select[contains(@name,'id_type') or contains(@name,'idType')]"
-    XPATH_PASSENGER_ID_NUMBER = "//input[contains(@name,'id_number') or contains(@placeholder,'Nomor Identitas') or contains(@name,'idNumber')]"
-    XPATH_PASSENGER_PHONE = "//input[contains(@name,'passenger_phone') or contains(@placeholder,'No. Telepon Penumpang')]"
+    XPATH_PASSENGER_NAME = "//input[@id='penumpang_nama1' and @name='penumpang_nama[]']"
+    XPATH_PASSENGER_ID_TYPE = "//select[@id='penumpang_title1' and @name='penumpang_title[]']"
+    XPATH_PASSENGER_ID_NUMBER_TYPE = "//select[@id='penumpang_tandapengenal1' and @name='penumpang_tandapengenal[]']"
+    XPATH_PASSENGER_ID_NUMBER = "//input[@id='penumpang_notandapengenal1' and @name='penumpang_notandapengenal[]']"
 
     # XPath Locators - Actions
-    XPATH_CONTINUE_BUTTON = "//button[contains(text(),'Lanjutkan') or contains(text(),'Continue') or contains(text(),'Selanjutnya')]"
+    XPATH_CONTINUE_BUTTON = "//button[@id='bayar' and @name='submitbutton']"
     XPATH_BACK_BUTTON = "//button[contains(text(),'Kembali') or contains(text(),'Back')]"
     XPATH_VALIDATION_ERROR = "//*[contains(@class,'error') or contains(@class,'invalid-feedback') or contains(@class,'text-danger')]"
+    XPATH_VALIDATION_ERROR_MOHON_ISI_NAME = "//li[normalize-space()='Mohon isi Nama']"
+    XPATH_VALIDATION_ERROR_MOHON_ISI_NO_ID = "//li[normalize-space()='Mohon isi Nomor Identitas']"
+    XPATH_VALIDATION_ERROR_MOHON_ISI_EMAIL = "//li[normalize-space()='Mohon diisi Email']"
+    XPATH_VALIDATION_PASSENGER_ERROR_MOHON_ISI_NO_ID = "//li[normalize-space()='Nomor Identitas Wajib Diisi']"
+    XPATH_VALIDATION_PASSENGER_ERROR_MOHON_NAME = "//li[normalize-space()='Fill out this field']"
     XPATH_REQUIRED_ERROR = "//*[contains(text(),'wajib') or contains(text(),'harus diisi') or contains(text(),'required')]"
 
     def fill_contact_person(self, name: str, phone: str, email: str):
@@ -65,11 +74,29 @@ class PassengerPage(BasePage):
         self.click_xpath(self.XPATH_BACK_BUTTON)
         self.page.wait_for_load_state("networkidle")
 
-    def is_validation_error_displayed(self) -> bool:
+    def is_validation_error_displayed_name_error(self) -> bool:
         """Check if any validation error is shown."""
-        return self.is_visible_xpath(self.XPATH_VALIDATION_ERROR) or self.is_visible_xpath(
+        return self.is_visible_xpath(self.XPATH_VALIDATION_ERROR_MOHON_ISI_NAME) or self.is_visible_xpath(
             self.XPATH_REQUIRED_ERROR
         )
+    def is_validation_error_displayed_no_id(self) -> bool:
+        """Check if any validation error is shown."""
+        return self.is_visible_xpath(self.XPATH_VALIDATION_ERROR_MOHON_ISI_NO_ID) or self.is_visible_xpath(
+            self.XPATH_REQUIRED_ERROR
+        )
+    def is_validation_error_displayed_email(self) -> bool:
+        """Check if any validation error is shown."""
+        return self.is_visible_xpath(self.XPATH_VALIDATION_ERROR_MOHON_ISI_EMAIL) or self.is_visible_xpath(
+            self.XPATH_REQUIRED_ERROR
+        )
+
+    def is_validation_passenger_no_id_error(self) -> bool:
+        """Check if 'Nomor Identitas Wajib Diisi' error is shown."""
+        return self.is_visible_xpath(self.XPATH_VALIDATION_PASSENGER_ERROR_MOHON_ISI_NO_ID)
+
+    def is_validation_passenger_name_error(self) -> bool:
+        """Check if 'Fill out this field' error is shown for passenger name."""
+        return self.is_visible_xpath(self.XPATH_VALIDATION_PASSENGER_ERROR_MOHON_NAME)
 
     def get_validation_errors(self) -> list[str]:
         """Get all validation error messages."""
@@ -85,3 +112,8 @@ class PassengerPage(BasePage):
     def submit_empty_form(self):
         """Submit form without filling any fields (for validation testing)."""
         self.click_continue()
+
+    def is_submit_button_disabled(self) -> bool:
+        """Check if submit/continue button is disabled when form is empty."""
+        locator = self.page.locator(f"xpath={self.XPATH_CONTINUE_BUTTON}")
+        return locator.is_disabled()

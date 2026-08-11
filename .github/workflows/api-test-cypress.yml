@@ -1,0 +1,84 @@
+name: API Tests (Cypress) - FakeREST API
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  lint:
+    name: Lint Code
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: 08-api-test-cypress/package-lock.json
+
+      - name: Install dependencies
+        working-directory: 08-api-test-cypress
+        run: npm ci
+
+      - name: Lint (check syntax)
+        working-directory: 08-api-test-cypress
+        run: npx cypress verify
+
+  test:
+    name: Run API Tests
+    runs-on: ubuntu-latest
+    needs: lint
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: 08-api-test-cypress/package-lock.json
+
+      - name: Install dependencies
+        working-directory: 08-api-test-cypress
+        run: npm ci
+
+      - name: Run Cypress API Tests
+        working-directory: 08-api-test-cypress
+        run: npx cypress run
+
+      - name: Upload Screenshots on Failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cypress-api-screenshots
+          path: 08-api-test-cypress/cypress/screenshots/
+          retention-days: 7
+
+      - name: Upload Videos
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cypress-api-videos
+          path: 08-api-test-cypress/cypress/videos/
+          retention-days: 7
+
+      - name: Test Results Summary
+        if: always()
+        run: |
+          echo "============================================"
+          echo "📊 API TEST (CYPRESS) RESULTS"
+          echo "============================================"
+          echo "Target   : fakerestapi.azurewebsites.net"
+          echo "Framework: Cypress"
+          echo "Resources: Activities, Authors, Books, Users"
+          echo "Expected : All tests PASS"
+          echo "============================================"

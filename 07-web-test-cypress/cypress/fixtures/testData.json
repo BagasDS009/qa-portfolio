@@ -1,0 +1,20 @@
+{
+  "validSearch": {
+    "origin": "PSE",
+    "destination": "BD",
+    "tgl": "24",
+    "adults": 1
+  },
+  "validSearchAlt": {
+    "origin": "GMR",
+    "destination": "YK",
+    "tgl": "15",
+    "adults": 2
+  },
+  "validSearchNotFound": {
+    "origin": "GMR",
+    "destination": "CNP",
+    "tgl": "15",
+    "adults": 1
+  }
+}

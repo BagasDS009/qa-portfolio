@@ -70,9 +70,9 @@ class TestBookingFlow:
             )
 
         with allure.step("Select first available train"):
-            train_name = self.train_list_page.find_train_by_name(0)
+            train_name = VALID_SEARCH["train_name"]
             allure.attach(train_name, name="Selected Train", attachment_type=allure.attachment_type.TEXT)
-            self.train_list_page.select_first_train()
+            self.train_list_page.select_train_by_name(train_name)
 
         with allure.step("Verify passenger form is displayed"):
             assert self.passenger_page.is_passenger_form_displayed(), (
@@ -91,12 +91,12 @@ class TestBookingFlow:
 
         if trains_count >= 2:
             with allure.step("Select first train then go back"):
-                self.train_list_page.select_first_train()
+                self.train_list_page.select_train_by_name(VALID_SEARCH["train_name"])
                 self.passenger_page.click_back()
 
             with allure.step("Select second train"):
                 self.train_list_page.wait_for_results()
-                second_train = self.train_list_page.find_train_by_name(1)
+                second_train = self.train_list_page.get_train_name(1)
                 self.train_list_page.select_train_by_index(1)
 
             with allure.step("Verify passenger form for new selection"):
@@ -115,8 +115,8 @@ class TestBookingFlow:
         with allure.step("Step 1: Search for trains"):
             self._search_train()
 
-        with allure.step("Step 2: Select first available train"):
-            self.train_list_page.select_first_train()
+        with allure.step("Step 2: Select train by name"):
+            self.train_list_page.select_train_by_name(VALID_SEARCH["train_name"])
 
         with allure.step("Step 3: Fill passenger data"):
             self._fill_passenger_data()

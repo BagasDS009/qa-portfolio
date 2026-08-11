@@ -1,0 +1,17 @@
+{
+  "name": "07-web-test-cypress",
+  "version": "1.0.0",
+  "description": "Web Automation Testing - KAI Booking with Cypress",
+  "scripts": {
+    "test": "cypress run",
+    "test:headed": "cypress run --headed",
+    "test:open": "cypress open",
+    "test:search": "cypress run --spec 'cypress/e2e/search.cy.js'",
+    "report": "allure serve allure-results"
+  },
+  "devDependencies": {
+    "cypress": "^13.0.0",
+    "@shelex/cypress-allure-plugin": "^2.40.0",
+    "@cypress/xpath": "^2.0.0"
+  }
+}

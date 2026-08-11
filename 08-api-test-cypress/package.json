@@ -1,0 +1,18 @@
+{
+  "name": "08-api-test-cypress",
+  "version": "1.0.0",
+  "description": "API Automation Testing - FakeREST API with Cypress",
+  "scripts": {
+    "test": "cypress run",
+    "test:activities": "cypress run --spec 'cypress/e2e/activities.cy.js'",
+    "test:authors": "cypress run --spec 'cypress/e2e/authors.cy.js'",
+    "test:books": "cypress run --spec 'cypress/e2e/books.cy.js'",
+    "test:users": "cypress run --spec 'cypress/e2e/users.cy.js'",
+    "test:open": "cypress open",
+    "report": "allure serve allure-results"
+  },
+  "devDependencies": {
+    "cypress": "^13.0.0",
+    "@shelex/cypress-allure-plugin": "^2.40.0"
+  }
+}

@@ -62,16 +62,18 @@ Homepage → Search Train → Select Train → Passenger Data → Seat Selection
 
 ## Test Cases
 
-### TC-001 & TC-002: Login (test_login.py)
+### TC-001 & TC-002: Login (test_login.py) ⚠️ CAPTCHA Protected
 
-| ID | Test Case | Severity |
-|----|-----------|----------|
-| TC-001 | Valid login with correct credentials | Critical |
-| TC-002 | Invalid login - wrong password | Critical |
-| TC-002b | Invalid login - unregistered email | Normal |
-| TC-002c | Invalid login - empty fields | Normal |
+| ID | Test Case | Severity | Status |
+|----|-----------|----------|--------|
+| TC-001 | Valid login with correct credentials | Critical | ⚠️ Blocked by CAPTCHA |
+| TC-002 | Invalid login - wrong password | Critical | ⚠️ Blocked by CAPTCHA |
+| TC-002b | Invalid login - unregistered email | Normal | ⚠️ Blocked by CAPTCHA |
+| TC-002c | Invalid login - empty fields | Normal | ⚠️ Blocked by CAPTCHA |
 
-### TC-003: Search Train (test_search.py)
+> **Note:** Login tests require CAPTCHA verification which cannot be automated. These tests are designed for manual execution or environments where CAPTCHA is disabled.
+
+### TC-003: Search Train (test_search.py) ✅ Automated
 
 | ID | Test Case | Severity |
 |----|-----------|----------|
@@ -82,30 +84,48 @@ Homepage → Search Train → Select Train → Passenger Data → Seat Selection
 | TC-003e | Search form visible on homepage | Blocker |
 | TC-003f | Baby cannot exceed adult passengers (tooltip validation) | Normal |
 
-### TC-004, TC-005, TC-006: Booking Flow (test_booking.py)
+### TC-004, TC-005, TC-006: Booking Flow (test_booking.py) ⚠️ CAPTCHA Protected
 
-| ID | Test Case | Severity |
-|----|-----------|----------|
-| TC-004 | Select train from search results | Critical |
-| TC-005 | Change train selection (go back, pick another) | Normal |
-| TC-006 | Complete end-to-end booking flow | Critical |
+| ID | Test Case | Severity | Status |
+|----|-----------|----------|--------|
+| TC-004 | Select train from search results | Critical | ⚠️ Blocked by CAPTCHA |
+| TC-005 | Change train selection (go back, pick another) | Normal | ⚠️ Blocked by CAPTCHA |
+| TC-006 | Complete end-to-end booking flow | Critical | ⚠️ Blocked by CAPTCHA |
 
-### TC-007: Form Validation (test_validation.py)
+> **Note:** Booking flow requires login which is protected by CAPTCHA. Test code is fully implemented and ready for environments where CAPTCHA is disabled.
 
-| ID | Test Case | Severity |
-|----|-----------|----------|
-| TC-007 | Submit empty passenger form - validation errors shown | Critical |
-| TC-007b | Contact name required - empty name rejected | Normal |
-| TC-007c | ID number required - empty ID rejected | Normal |
-| TC-007d | Search without origin station - cannot proceed | Normal |
+### TC-007: Form Validation (test_validation.py) ✅ Automated
 
-### TC-008: Logout (test_logout.py)
+| ID | Test Case | Severity | Status |
+|----|-----------|----------|--------|
+| TC-007 | Submit button disabled when form is empty | Critical | ✅ Pass |
+| TC-007b | Mohon isi Nama (blur validation) | Normal | ✅ Pass |
+| TC-007c | Mohon isi Nomor Identitas (blur validation) | Normal | ✅ Pass |
+| TC-007d | Search without origin station | Normal | ✅ Pass |
+| TC-007e | Mohon diisi Email (blur validation) | Normal | ✅ Pass |
+| TC-007f | Nomor Identitas Wajib Diisi - Passenger (blur) | Normal | ✅ Pass |
+| TC-007g | Passenger name field has required attribute | Normal | ✅ Pass |
 
-| ID | Test Case | Severity |
-|----|-----------|----------|
-| TC-008 | Successful logout | Critical |
-| TC-008b | Cannot access protected pages after logout | Normal |
-| TC-008c | Re-login after logout | Normal |
+### TC-008: Logout (test_logout.py) ⚠️ CAPTCHA Protected
+
+| ID | Test Case | Severity | Status |
+|----|-----------|----------|--------|
+| TC-008 | Successful logout | Critical | ⚠️ Blocked by CAPTCHA |
+| TC-008b | Cannot access protected pages after logout | Normal | ⚠️ Blocked by CAPTCHA |
+| TC-008c | Re-login after logout | Normal | ⚠️ Blocked by CAPTCHA |
+
+> **Note:** Logout tests require authenticated state (login) which is blocked by CAPTCHA.
+
+### Test Execution Coverage
+
+| Suite | Tests | Automated | Blocked (CAPTCHA) |
+|-------|-------|-----------|-------------------|
+| Search | 6 | ✅ 6 | 0 |
+| Validation | 7 | ✅ 7 | 0 |
+| Login | 4 | 0 | ⚠️ 4 |
+| Booking | 3 | 0 | ⚠️ 3 |
+| Logout | 3 | 0 | ⚠️ 3 |
+| **Total** | **23** | **13** | **10** |
 
 ## Setup & Installation
 
