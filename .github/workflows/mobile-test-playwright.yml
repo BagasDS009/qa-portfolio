@@ -1,0 +1,101 @@
+name: Mobile Web Tests (Playwright) - Device Emulation
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  lint:
+    name: Lint Code
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install flake8
+        run: pip install flake8
+
+      - name: Run Lint
+        working-directory: 09-mobile-web-testing
+        run: |
+          flake8 tests/ conftest.py \
+            --max-line-length=120 \
+            --ignore=E501,W503,F401,E402,F541,E302,E303 \
+            --count --statistics
+
+  test:
+    name: Run Mobile Tests
+    runs-on: ubuntu-latest
+    needs: lint
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        working-directory: 09-mobile-web-testing
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Install Playwright browsers
+        working-directory: 09-mobile-web-testing
+        run: playwright install --with-deps chromium
+
+      - name: Run Mobile Tests
+        working-directory: 09-mobile-web-testing
+        run: |
+          pytest tests/ -v \
+            --alluredir=reports/allure-results \
+            --html=reports/report.html \
+            --self-contained-html
+
+      - name: Generate Allure Report
+        if: always()
+        uses: simple-elf/allure-report-action@master
+        with:
+          allure_results: 09-mobile-web-testing/reports/allure-results
+          allure_report: 09-mobile-web-testing/reports/allure-report
+
+      - name: Upload Allure Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mobile-allure-report
+          path: 09-mobile-web-testing/reports/allure-report
+          retention-days: 14
+
+      - name: Upload HTML Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mobile-html-report
+          path: 09-mobile-web-testing/reports/report.html
+          retention-days: 14
+
+      - name: Test Results Summary
+        if: always()
+        run: |
+          echo "============================================"
+          echo "📊 MOBILE WEB TEST RESULTS"
+          echo "============================================"
+          echo "Target   : saucedemo.com"
+          echo "Devices  : iPhone 13, Pixel 7, Galaxy S21, iPad Pro"
+          echo "Framework: Playwright (Device Emulation)"
+          echo "Expected : All tests PASS"
+          echo "============================================"

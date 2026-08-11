@@ -22,7 +22,8 @@ qa-portfolio/
 ├── 05-performance-testing/          → Load & Performance Testing (JMeter)
 ├── 06-api-testing-playwright/       → API Automation (Python + Playwright)
 ├── 07-web-test-cypress/             → Web UI Automation (JavaScript + Cypress)
-└── 08-api-test-cypress/             → API Automation (JavaScript + Cypress)
+├── 08-api-test-cypress/             → API Automation (JavaScript + Cypress)
+└── 09-mobile-web-testing/           → Mobile Web Testing (Playwright Device Emulation)
 ```
 
 ## Projects Detail
@@ -37,6 +38,7 @@ qa-portfolio/
 | 06 | API Automation | Playwright | Python | fakerestapi.azurewebsites.net |
 | 07 | Web Automation | Cypress | JavaScript | booking.kai.id |
 | 08 | API Automation | Cypress | JavaScript | fakerestapi.azurewebsites.net |
+| 09 | Mobile Web Testing | Playwright | Python | saucedemo.com (device emulation) |
 
 ## CI/CD Pipelines
 
@@ -62,6 +64,7 @@ All automation projects run on GitHub Actions:
 | Version Control | Git, GitHub |
 | Design Pattern | Page Object Model (POM) |
 | Anti-Detection | playwright-stealth, Cloudflare bypass |
+| Mobile Testing | Playwright device emulation (iPhone, Pixel, Galaxy, iPad) |
 
 ## Test Coverage Summary
 
@@ -71,7 +74,8 @@ All automation projects run on GitHub Actions:
 | 06 - API (Playwright) | 22 | 22 | ✅ Full pass |
 | 07 - Web (Cypress) | 13 | 13 | ⚠️ Limited (flexdatalist) |
 | 08 - API (Cypress) | 22 | 22 | ✅ Full pass |
-| **Total** | **80** | **70** | |
+| 09 - Mobile Web (Playwright) | 9 (x3 devices) | 29 | ✅ Full pass |
+| **Total** | **89** | **99** | |
 
 ## How to Run
 
