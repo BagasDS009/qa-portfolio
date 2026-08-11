@@ -1,0 +1,55 @@
+name: Web Tests (Selenium + Java) - Automation Exercise
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: selenium-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Run Selenium Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      CI: true
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'maven'
+
+      - name: Setup Firefox
+        uses: browser-actions/setup-firefox@v1
+        with:
+          firefox-version: 'latest'
+
+      - name: Run Tests (headless)
+        working-directory: 10-web-automation-selenium
+        run: mvn clean test -DCI=true
+
+      - name: Upload Allure Results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: selenium-allure-results
+          path: 10-web-automation-selenium/target/allure-results
+          retention-days: 14
+
+      - name: Upload Surefire Reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: selenium-surefire-reports
+          path: 10-web-automation-selenium/target/surefire-reports
+          retention-days: 7

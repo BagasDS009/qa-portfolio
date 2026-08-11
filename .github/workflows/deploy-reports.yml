@@ -7,6 +7,7 @@ on:
       - "API Tests (Cypress) - FakeREST API"
       - "Mobile Tests (Playwright) - Device Emulation"
       - "Web Tests (Playwright) - KAI Booking"
+      - "Web Tests (Selenium + Java) - Automation Exercise"
     types: [completed]
   workflow_dispatch:
 
@@ -61,6 +62,14 @@ jobs:
           workflow: web-test-playwright.yml
           name: web-validation-results
           path: allure-results/web-validation
+        continue-on-error: true
+
+      - name: Download Selenium Results
+        uses: dawidd6/action-download-artifact@v3
+        with:
+          workflow: web-test-selenium.yml
+          name: selenium-allure-results
+          path: allure-results/selenium
         continue-on-error: true
 
       - name: Install Allure CLI

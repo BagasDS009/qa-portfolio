@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="Automation Exercise - Selenium Test Suite" parallel="classes" thread-count="1">
+    <test name="Authentication Tests">
+        <classes>
+            <class name="com.kai.tests.LoginTest"/>
+        </classes>
+    </test>
+    <test name="Products &amp; Search Tests">
+        <classes>
+            <class name="com.kai.tests.SearchTest"/>
+        </classes>
+    </test>
+</suite>
