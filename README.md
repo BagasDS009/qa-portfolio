@@ -5,6 +5,8 @@
 ![Mobile Tests](https://github.com/BagasDS009/qa-portfolio/actions/workflows/mobile-test-playwright.yml/badge.svg)
 ![Web Tests](https://github.com/BagasDS009/qa-portfolio/actions/workflows/web-test-playwright.yml/badge.svg)
 
+**[View Allure Test Report](https://bagasds009.github.io/qa-portfolio/)**
+
 ![Python](https://img.shields.io/badge/Python-3.11+-blue?logo=python)
 ![Playwright](https://img.shields.io/badge/Playwright-1.49+-green?logo=playwright)
 ![Cypress](https://img.shields.io/badge/Cypress-13+-green?logo=cypress)

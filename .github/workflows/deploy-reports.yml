@@ -4,7 +4,9 @@ on:
   workflow_run:
     workflows:
       - "API Tests (Playwright) - FakeREST API"
+      - "API Tests (Cypress) - FakeREST API"
       - "Mobile Tests (Playwright) - Device Emulation"
+      - "Web Tests (Playwright) - KAI Booking"
     types: [completed]
   workflow_dispatch:
 
@@ -19,7 +21,7 @@ concurrency:
 
 jobs:
   deploy:
-    name: Deploy Reports
+    name: Deploy All Reports
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
     environment:
@@ -45,6 +47,22 @@ jobs:
           path: allure-results/mobile
         continue-on-error: true
 
+      - name: Download Web Search Results
+        uses: dawidd6/action-download-artifact@v3
+        with:
+          workflow: web-test-playwright.yml
+          name: web-search-results
+          path: allure-results/web-search
+        continue-on-error: true
+
+      - name: Download Web Validation Results
+        uses: dawidd6/action-download-artifact@v3
+        with:
+          workflow: web-test-playwright.yml
+          name: web-validation-results
+          path: allure-results/web-validation
+        continue-on-error: true
+
       - name: Install Allure CLI
         run: |
           sudo apt-get update -qq
@@ -57,8 +75,9 @@ jobs:
       - name: Generate Combined Allure Report
         run: |
           mkdir -p combined-results
-          cp -r allure-results/api-playwright/* combined-results/ 2>/dev/null || true
-          cp -r allure-results/mobile/* combined-results/ 2>/dev/null || true
+          find allure-results -name "*.json" -exec cp {} combined-results/ \; 2>/dev/null || true
+          find allure-results -name "*.txt" -exec cp {} combined-results/ \; 2>/dev/null || true
+          find allure-results -name "*.png" -exec cp {} combined-results/ \; 2>/dev/null || true
           allure generate combined-results -o public --clean
 
       - name: Setup Pages
