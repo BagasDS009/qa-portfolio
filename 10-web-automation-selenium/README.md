@@ -95,3 +95,15 @@ allure serve target/allure-results
 ## Author
 
 **Bagas Dimas Saputra** - QA Engineer
+
+
+## Known Limitations
+
+- **CI (GitHub Actions):** automationexercise.com shows Google Consent/Ads overlay in headless mode on datacenter IPs, blocking page content from loading. Tests pass locally but fail in CI.
+- **Local execution:** All 16 tests pass with headed Firefox on residential IP
+- Google Ads iframes handled via `dismissAds()` method, but consent popup before page load cannot be bypassed in headless
+
+| Environment | Result |
+|-------------|--------|
+| Local (Mac, headed) | All pass |
+| GitHub Actions (headless) | Partial fail (consent overlay) |
