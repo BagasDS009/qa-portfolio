@@ -1,0 +1,80 @@
+name: Deploy Allure Reports to GitHub Pages
+
+on:
+  workflow_run:
+    workflows:
+      - "API Tests (Playwright) - FakeREST API"
+      - "Mobile Tests (Playwright) - Device Emulation"
+    types: [completed]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Deploy Reports
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download API Playwright Results
+        uses: dawidd6/action-download-artifact@v3
+        with:
+          workflow: api-test-playwright.yml
+          name: api-playwright-allure-results
+          path: allure-results/api-playwright
+        continue-on-error: true
+
+      - name: Download Mobile Results
+        uses: dawidd6/action-download-artifact@v3
+        with:
+          workflow: mobile-test-playwright.yml
+          name: mobile-test-results
+          path: allure-results/mobile
+        continue-on-error: true
+
+      - name: Install Allure CLI
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y default-jre
+          curl -o allure.tgz -Ls https://github.com/allure-framework/allure2/releases/download/2.27.0/allure-2.27.0.tgz
+          tar -xzf allure.tgz
+          sudo mv allure-2.27.0 /opt/allure
+          sudo ln -s /opt/allure/bin/allure /usr/local/bin/allure
+
+      - name: Generate Combined Allure Report
+        run: |
+          mkdir -p combined-results
+          cp -r allure-results/api-playwright/* combined-results/ 2>/dev/null || true
+          cp -r allure-results/mobile/* combined-results/ 2>/dev/null || true
+          allure generate combined-results -o allure-report --clean
+
+      - name: Create index page
+        run: |
+          mkdir -p public
+          cp -r allure-report/* public/
+          echo '<html><head><meta http-equiv="refresh" content="0;url=index.html"></head></html>' > public/redirect.html
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload to Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: public
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

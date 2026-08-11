@@ -1,5 +1,10 @@
 # QA Portfolio - Bagas Dimas Saputra
 
+![API Tests (Playwright)](https://github.com/BagasDS009/qa-portfolio/actions/workflows/api-test-playwright.yml/badge.svg)
+![API Tests (Cypress)](https://github.com/BagasDS009/qa-portfolio/actions/workflows/api-test-cypress.yml/badge.svg)
+![Mobile Tests](https://github.com/BagasDS009/qa-portfolio/actions/workflows/mobile-test-playwright.yml/badge.svg)
+![Web Tests](https://github.com/BagasDS009/qa-portfolio/actions/workflows/web-test-playwright.yml/badge.svg)
+
 ![Python](https://img.shields.io/badge/Python-3.11+-blue?logo=python)
 ![Playwright](https://img.shields.io/badge/Playwright-1.49+-green?logo=playwright)
 ![Cypress](https://img.shields.io/badge/Cypress-13+-green?logo=cypress)
