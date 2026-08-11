@@ -78,6 +78,31 @@ jobs:
           find allure-results -name "*.json" -exec cp {} combined-results/ \; 2>/dev/null || true
           find allure-results -name "*.txt" -exec cp {} combined-results/ \; 2>/dev/null || true
           find allure-results -name "*.png" -exec cp {} combined-results/ \; 2>/dev/null || true
+          
+          # Add environment info
+          cat > combined-results/environment.properties << EOF
+          Project=QA Portfolio - Bagas Dimas Saputra
+          Web.Target=booking.kai.id
+          API.Target=fakerestapi.azurewebsites.net
+          Mobile.Target=saucedemo.com
+          Framework.Web=Playwright (Python)
+          Framework.API=Playwright (Python) + Cypress (JS)
+          Framework.Mobile=Playwright Device Emulation
+          Devices=iPhone 13, Pixel 7, Galaxy S21, iPad Pro
+          CI=GitHub Actions
+          EOF
+          
+          # Add categories for better grouping
+          cat > combined-results/categories.json << 'EOF'
+          [
+            {"name": "API Tests", "matchedStatuses": ["passed", "failed"], "messageRegex": ".*api.*"},
+            {"name": "Web Tests", "matchedStatuses": ["passed", "failed"], "messageRegex": ".*search.*|.*validation.*"},
+            {"name": "Mobile Tests", "matchedStatuses": ["passed", "failed"], "messageRegex": ".*mobile.*|.*responsive.*"},
+            {"name": "Product Defects", "matchedStatuses": ["failed"]},
+            {"name": "Test Infrastructure", "matchedStatuses": ["broken"]}
+          ]
+          EOF
+          
           allure generate combined-results -o public --clean
 
       - name: Setup Pages
