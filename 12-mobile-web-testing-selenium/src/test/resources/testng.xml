@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="Mobile Web Testing Suite" verbose="1">
+
+    <test name="Responsive Design Tests">
+        <classes>
+            <class name="com.kai.tests.ResponsiveTest"/>
+        </classes>
+    </test>
+
+    <test name="Mobile Navigation Tests">
+        <classes>
+            <class name="com.kai.tests.MobileNavigationTest"/>
+        </classes>
+    </test>
+
+    <test name="Mobile Checkout Tests">
+        <classes>
+            <class name="com.kai.tests.MobileCheckoutTest"/>
+        </classes>
+    </test>
+
+    <test name="Mobile Orientation Tests">
+        <classes>
+            <class name="com.kai.tests.MobileOrientationTest"/>
+        </classes>
+    </test>
+
+</suite>

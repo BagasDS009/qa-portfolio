@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="FakeREST API Test Suite" verbose="1">
+
+    <test name="Activities API Tests">
+        <classes>
+            <class name="com.kai.tests.ActivitiesTest"/>
+        </classes>
+    </test>
+
+    <test name="Authors API Tests">
+        <classes>
+            <class name="com.kai.tests.AuthorsTest"/>
+        </classes>
+    </test>
+
+    <test name="Books API Tests">
+        <classes>
+            <class name="com.kai.tests.BooksTest"/>
+        </classes>
+    </test>
+
+    <test name="Users API Tests">
+        <classes>
+            <class name="com.kai.tests.UsersTest"/>
+        </classes>
+    </test>
+
+</suite>

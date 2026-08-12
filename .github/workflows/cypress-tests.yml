@@ -1,4 +1,4 @@
-name: API Tests (Cypress) - FakeREST API
+name: Cypress Tests (JavaScript) - API
 
 on:
   push:
@@ -8,12 +8,12 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: api-cypress-${{ github.ref }}
+  group: cypress-all-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  test:
-    name: Run Tests
+  api-test:
+    name: API Test (08)
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:

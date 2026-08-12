@@ -3,11 +3,9 @@ name: Deploy Allure Reports to GitHub Pages
 on:
   workflow_run:
     workflows:
-      - "API Tests (Playwright) - FakeREST API"
-      - "API Tests (Cypress) - FakeREST API"
-      - "Mobile Tests (Playwright) - Device Emulation"
-      - "Web Tests (Playwright) - KAI Booking"
-      - "Web Tests (Selenium + Java) - Automation Exercise"
+      - "Playwright Tests (Python) - All Projects"
+      - "Cypress Tests (JavaScript) - API"
+      - "Selenium Tests (Java) - All Projects"
     types: [completed]
   workflow_dispatch:
 
@@ -35,41 +33,49 @@ jobs:
       - name: Download API Playwright Results
         uses: dawidd6/action-download-artifact@v3
         with:
-          workflow: api-test-playwright.yml
-          name: api-playwright-allure-results
+          workflow: playwright-tests.yml
+          name: api-playwright-results
           path: allure-results/api-playwright
         continue-on-error: true
 
       - name: Download Mobile Results
         uses: dawidd6/action-download-artifact@v3
         with:
-          workflow: mobile-test-playwright.yml
-          name: mobile-test-results
+          workflow: playwright-tests.yml
+          name: mobile-playwright-results
           path: allure-results/mobile
         continue-on-error: true
 
-      - name: Download Web Search Results
+      - name: Download Web Playwright Results
         uses: dawidd6/action-download-artifact@v3
         with:
-          workflow: web-test-playwright.yml
-          name: web-search-results
-          path: allure-results/web-search
+          workflow: playwright-tests.yml
+          name: web-playwright-results
+          path: allure-results/web-playwright
         continue-on-error: true
 
-      - name: Download Web Validation Results
+      - name: Download Selenium Web Results
         uses: dawidd6/action-download-artifact@v3
         with:
-          workflow: web-test-playwright.yml
-          name: web-validation-results
-          path: allure-results/web-validation
+          workflow: selenium-tests.yml
+          name: web-selenium-allure-results
+          path: allure-results/web-selenium
         continue-on-error: true
 
-      - name: Download Selenium Results
+      - name: Download Selenium API Results
         uses: dawidd6/action-download-artifact@v3
         with:
-          workflow: web-test-selenium.yml
-          name: selenium-allure-results
-          path: allure-results/selenium
+          workflow: selenium-tests.yml
+          name: api-selenium-allure-results
+          path: allure-results/api-selenium
+        continue-on-error: true
+
+      - name: Download Selenium Mobile Results
+        uses: dawidd6/action-download-artifact@v3
+        with:
+          workflow: selenium-tests.yml
+          name: mobile-selenium-allure-results
+          path: allure-results/mobile-selenium
         continue-on-error: true
 
       - name: Install Allure CLI
@@ -94,9 +100,9 @@ jobs:
           Web.Target=booking.kai.id
           API.Target=fakerestapi.azurewebsites.net
           Mobile.Target=saucedemo.com
-          Framework.Web=Playwright (Python)
-          Framework.API=Playwright (Python) + Cypress (JS)
-          Framework.Mobile=Playwright Device Emulation
+          Framework.Web=Playwright (Python) + Selenium (Java)
+          Framework.API=Playwright (Python) + Cypress (JS) + RestAssured (Java)
+          Framework.Mobile=Playwright Device Emulation + Selenium Firefox Emulation
           Devices=iPhone 13, Pixel 7, Galaxy S21, iPad Pro
           CI=GitHub Actions
           EOF

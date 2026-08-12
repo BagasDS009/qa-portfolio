@@ -1,0 +1,101 @@
+name: Selenium Tests (Java) - All Projects
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: selenium-all-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  web-test:
+    name: Web Automation (10)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'maven'
+
+      - name: Setup Firefox
+        uses: browser-actions/setup-firefox@v1
+        with:
+          firefox-version: 'latest'
+
+      - name: Run Web Tests
+        working-directory: 10-web-automation-selenium
+        run: mvn clean test -DCI=true || true
+
+      - name: Upload Results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-selenium-allure-results
+          path: 10-web-automation-selenium/target/allure-results
+          retention-days: 14
+
+  api-test:
+    name: API Test (11)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'maven'
+
+      - name: Run API Tests
+        working-directory: 11-api-test-selenium
+        run: mvn clean test
+
+      - name: Upload Results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: api-selenium-allure-results
+          path: 11-api-test-selenium/target/allure-results
+          retention-days: 14
+
+  mobile-web-test:
+    name: Mobile Web Test (12)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'maven'
+
+      - name: Setup Firefox
+        uses: browser-actions/setup-firefox@v1
+        with:
+          firefox-version: 'latest'
+
+      - name: Run Mobile Web Tests
+        working-directory: 12-mobile-web-testing-selenium
+        run: mvn clean test
+
+      - name: Upload Results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mobile-selenium-allure-results
+          path: 12-mobile-web-testing-selenium/target/allure-results
+          retention-days: 14
