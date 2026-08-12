@@ -2,16 +2,19 @@ package com.kai.tests;
 
 import com.kai.config.DeviceConfig;
 import io.github.bonigarcia.wdm.WebDriverManager;
-import org.openqa.selenium.Dimension;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.WebDriver;
+import io.qameta.allure.Allure;
+import org.openqa.selenium.*;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.firefox.FirefoxProfile;
+import org.testng.ITestResult;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeSuite;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.time.Duration;
+import java.util.Properties;
 
 /**
  * Base test class providing WebDriver setup with Firefox mobile emulation.
@@ -19,14 +22,24 @@ import java.time.Duration;
  */
 public class BaseTest {
 
-    protected static final String BASE_URL = "https://www.saucedemo.com";
+    protected static Properties config;
+    protected static String BASE_URL;
 
     protected WebDriver driver;
     protected JavascriptExecutor js;
 
     @BeforeSuite
-    public void setupDriver() {
+    public void setupDriver() throws Exception {
         WebDriverManager.firefoxdriver().setup();
+
+        // Load config
+        config = new Properties();
+        InputStream configStream = getClass().getClassLoader().getResourceAsStream("config.properties");
+        if (configStream == null) {
+            throw new IllegalStateException("config.properties not found in classpath");
+        }
+        config.load(configStream);
+        BASE_URL = config.getProperty("base.url");
     }
 
     /**
@@ -47,7 +60,6 @@ public class BaseTest {
         options.setProfile(profile);
 
         driver = new FirefoxDriver(options);
-        // Set viewport size to match device
         driver.manage().window().setSize(new Dimension(device.getWidth(), device.getHeight()));
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
         js = (JavascriptExecutor) driver;
@@ -75,30 +87,39 @@ public class BaseTest {
         js = (JavascriptExecutor) driver;
     }
 
-    private FirefoxOptions buildBaseOptions() {
-        FirefoxOptions options = new FirefoxOptions();
-        options.addArguments("--headless");
-        return options;
-    }
-
     /**
-     * Navigate to SauceDemo and wait for page load.
+     * Navigate to target application and wait for page load.
      */
     protected void navigateToBase() {
         driver.get(BASE_URL);
     }
 
     /**
-     * Login with standard_user credentials.
+     * Login with credentials from config.properties.
      */
     protected void login() {
-        driver.findElement(org.openqa.selenium.By.id("user-name")).sendKeys("standard_user");
-        driver.findElement(org.openqa.selenium.By.id("password")).sendKeys("secret_sauce");
-        driver.findElement(org.openqa.selenium.By.id("login-button")).click();
+        String username = config.getProperty("username");
+        String password = config.getProperty("password");
+        driver.findElement(By.id("user-name")).sendKeys(username);
+        driver.findElement(By.id("password")).sendKeys(password);
+        driver.findElement(By.id("login-button")).click();
     }
 
     @AfterMethod
-    public void tearDown() {
+    public void tearDown(ITestResult result) {
+        // Capture screenshot on failure
+        if (result.getStatus() == ITestResult.FAILURE && driver != null) {
+            try {
+                byte[] screenshot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES);
+                Allure.addAttachment("Screenshot on Failure",
+                        "image/png",
+                        new ByteArrayInputStream(screenshot),
+                        ".png");
+            } catch (Exception e) {
+                // Ignore screenshot errors
+            }
+        }
+
         if (driver != null) {
             driver.quit();
         }
