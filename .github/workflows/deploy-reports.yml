@@ -6,6 +6,7 @@ on:
       - "Playwright Tests (Python) - All Projects"
       - "Cypress Tests (JavaScript) - API"
       - "Selenium Tests (Java) - All Projects"
+      - "Performance, Security & Visual Tests"
     types: [completed]
   workflow_dispatch:
 

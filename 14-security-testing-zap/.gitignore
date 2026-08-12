@@ -1,0 +1,7 @@
+# Reports
+reports/
+*.html
+*.json
+
+# OS
+.DS_Store

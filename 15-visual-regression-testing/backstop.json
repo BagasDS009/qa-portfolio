@@ -1,0 +1,80 @@
+{
+  "id": "qa-portfolio-visual",
+  "viewports": [
+    {
+      "label": "Desktop",
+      "width": 1920,
+      "height": 1080
+    },
+    {
+      "label": "Tablet",
+      "width": 768,
+      "height": 1024
+    },
+    {
+      "label": "Mobile",
+      "width": 375,
+      "height": 812
+    }
+  ],
+  "scenarios": [
+    {
+      "label": "Login Page - Default State",
+      "url": "https://www.saucedemo.com",
+      "selectors": ["document"],
+      "misMatchThreshold": 0.1,
+      "requireSameDimensions": true
+    },
+    {
+      "label": "Login Page - Error State",
+      "url": "https://www.saucedemo.com",
+      "selectors": ["document"],
+      "misMatchThreshold": 0.1,
+      "onReadyScript": "login-error.js"
+    },
+    {
+      "label": "Inventory Page - Products List",
+      "url": "https://www.saucedemo.com/inventory.html",
+      "cookiePath": "cookies/standard-user.json",
+      "selectors": ["document"],
+      "misMatchThreshold": 0.2
+    },
+    {
+      "label": "Inventory Page - Product Detail",
+      "url": "https://www.saucedemo.com/inventory-item.html?id=4",
+      "cookiePath": "cookies/standard-user.json",
+      "selectors": ["document"],
+      "misMatchThreshold": 0.2
+    },
+    {
+      "label": "Cart Page - Empty",
+      "url": "https://www.saucedemo.com/cart.html",
+      "cookiePath": "cookies/standard-user.json",
+      "selectors": ["document"],
+      "misMatchThreshold": 0.1
+    },
+    {
+      "label": "Checkout Step One",
+      "url": "https://www.saucedemo.com/checkout-step-one.html",
+      "cookiePath": "cookies/standard-user.json",
+      "selectors": ["document"],
+      "misMatchThreshold": 0.1
+    }
+  ],
+  "paths": {
+    "bitmaps_reference": "backstop_data/bitmaps_reference",
+    "bitmaps_test": "backstop_data/bitmaps_test",
+    "engine_scripts": "engine_scripts",
+    "html_report": "backstop_data/html_report",
+    "ci_report": "backstop_data/ci_report"
+  },
+  "report": ["browser", "CI"],
+  "engine": "puppeteer",
+  "engineOptions": {
+    "args": ["--no-sandbox"]
+  },
+  "asyncCaptureLimit": 5,
+  "asyncCompareLimit": 50,
+  "debug": false,
+  "debugWindow": false
+}

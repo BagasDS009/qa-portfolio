@@ -1,0 +1,15 @@
+{
+  "name": "15-visual-regression-testing",
+  "version": "1.0.0",
+  "description": "Visual Regression Testing with BackstopJS",
+  "scripts": {
+    "init": "backstop init",
+    "reference": "backstop reference",
+    "test": "backstop test",
+    "approve": "backstop approve",
+    "report": "backstop openReport"
+  },
+  "devDependencies": {
+    "backstopjs": "^6.3.0"
+  }
+}

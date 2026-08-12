@@ -1,0 +1,14 @@
+# BackstopJS
+backstop_data/bitmaps_test/
+backstop_data/html_report/
+backstop_data/ci_report/
+
+# Keep reference images
+!backstop_data/bitmaps_reference/
+
+# Node
+node_modules/
+package-lock.json
+
+# OS
+.DS_Store

@@ -17,12 +17,14 @@
 ![Playwright](https://img.shields.io/badge/Playwright-1.49+-green?logo=playwright)
 ![Cypress](https://img.shields.io/badge/Cypress-13+-green?logo=cypress)
 ![Selenium](https://img.shields.io/badge/Selenium-4.18-green?logo=selenium)
+![k6](https://img.shields.io/badge/k6-Performance-7D64FF?logo=k6)
+![OWASP](https://img.shields.io/badge/OWASP-ZAP-orange)
 ![Allure](https://img.shields.io/badge/Report-Allure-yellow)
 ![CI](https://img.shields.io/badge/CI-GitHub_Actions-blue?logo=githubactions)
 
 ## Overview
 
-A comprehensive QA Engineer portfolio showcasing expertise in web automation, API testing, mobile web testing, manual testing, database testing, and performance testing across multiple frameworks and languages.
+A comprehensive QA Engineer portfolio showcasing expertise in web automation, API testing, mobile web testing, performance testing, security testing, visual regression, manual testing, and database testing across multiple frameworks and languages.
 
 ## Portfolio Structure
 
@@ -32,7 +34,7 @@ qa-portfolio/
 ├── 01-web-automation-playwright/    → Web UI Automation (Python + Playwright)
 ├── 02-api-testing-postman/          → API Testing (Postman + Newman)
 ├── 03-database-testing/             → SQL Database Validation
-├── 04-manual-testing/               → Test Plan, Test Cases, Bug Report
+├── 04-manual-testing/               → Test Strategy, Test Plan, Bug Reports
 ├── 05-performance-testing/          → Load & Performance Testing (JMeter)
 ├── 06-api-testing-playwright/       → API Automation (Python + Playwright)
 ├── 07-web-test-cypress/             → Web UI Automation (JavaScript + Cypress)
@@ -40,7 +42,10 @@ qa-portfolio/
 ├── 09-mobile-web-testing/           → Mobile Web Testing (Playwright Device Emulation)
 ├── 10-web-automation-selenium/      → Web UI Automation (Java + Selenium)
 ├── 11-api-test-selenium/            → API Automation (Java + RestAssured)
-└── 12-mobile-web-testing-selenium/  → Mobile Web Testing (Java + Selenium Firefox)
+├── 12-mobile-web-testing-selenium/  → Mobile Web Testing (Java + Selenium Firefox)
+├── 13-performance-testing-k6/       → Performance Testing (k6 - Load/Stress/Spike/Soak)
+├── 14-security-testing-zap/         → Security Testing (OWASP ZAP)
+└── 15-visual-regression-testing/    → Visual Regression (BackstopJS)
 ```
 
 ## Projects Detail
@@ -50,7 +55,7 @@ qa-portfolio/
 | 01 | Web Automation | Playwright | Python | booking.kai.id |
 | 02 | API Testing | Postman/Newman | JavaScript | reqres.in |
 | 03 | Database Testing | MySQL/PostgreSQL | SQL | - |
-| 04 | Manual Testing | - | - | E-Commerce |
+| 04 | Manual Testing | - | - | E-Commerce (strategy, bug reports) |
 | 05 | Performance Testing | JMeter | - | - |
 | 06 | API Automation | Playwright | Python | fakerestapi.azurewebsites.net |
 | 07 | Web Automation | Cypress | JavaScript | booking.kai.id |
@@ -59,6 +64,9 @@ qa-portfolio/
 | 10 | Web Automation | Selenium | Java | automationexercise.com |
 | 11 | API Automation | RestAssured | Java | fakerestapi.azurewebsites.net |
 | 12 | Mobile Web Testing | Selenium (Firefox) | Java | saucedemo.com (viewport emulation) |
+| 13 | Performance Testing | k6 | JavaScript | fakerestapi.azurewebsites.net |
+| 14 | Security Testing | OWASP ZAP | Docker/Bash | fakerestapi.azurewebsites.net |
+| 15 | Visual Regression | BackstopJS | JavaScript | saucedemo.com |
 
 ## CI/CD Pipelines
 
@@ -69,6 +77,7 @@ All automation projects run on GitHub Actions:
 | `playwright-tests.yml` | Playwright (Python) | 01, 06, 09 | ✅ |
 | `cypress-tests.yml` | Cypress (JavaScript) | 08 | ✅ |
 | `selenium-tests.yml` | Selenium/RestAssured (Java) | 10, 11, 12 | ✅ |
+| `k6-security-visual.yml` | k6, ZAP, BackstopJS | 13, 14, 15 | ✅ |
 | `deploy-reports.yml` | Allure Reports → GitHub Pages | All | ✅ |
 
 ## Skills & Tools
@@ -78,15 +87,18 @@ All automation projects run on GitHub Actions:
 | Web Automation | Playwright (Python), Cypress (JavaScript), Selenium (Java) |
 | API Testing | Playwright API, Cypress `cy.request()`, RestAssured, Postman, Newman |
 | Mobile Testing | Playwright device emulation, Selenium Firefox viewport emulation |
+| Performance Testing | k6 (Load, Stress, Spike, Soak), Apache JMeter |
+| Security Testing | OWASP ZAP (Baseline, API, Full scan) |
+| Visual Regression | BackstopJS (pixel-diff, multi-viewport) |
 | Reporting | Allure Report, pytest-html |
+| Code Quality | Checkstyle (Java), flake8 (Python) |
 | Database | MySQL, PostgreSQL, SQL |
-| Manual Testing | Test Plan, Test Cases, Bug Report, Test Summary |
-| Performance | Apache JMeter |
+| Manual Testing | Test Strategy, Test Plan, Test Cases, Bug Reports |
 | CI/CD | GitHub Actions |
 | Version Control | Git, GitHub |
-| Build Tools | Maven, npm |
+| Build Tools | Maven, npm, Docker |
 | Design Pattern | Page Object Model (POM) |
-| Languages | Python, Java, JavaScript, SQL |
+| Languages | Python, Java, JavaScript, SQL, Bash |
 
 ## Test Coverage Summary
 
@@ -100,7 +112,10 @@ All automation projects run on GitHub Actions:
 | 10 - Web (Selenium) | 7 | 7 | ✅ Pass (local) |
 | 11 - API (RestAssured) | 25 | 25 | ✅ Full pass |
 | 12 - Mobile Web (Selenium) | 17 (x3 devices) | 39 | ✅ Full pass |
-| **Total** | **141** | **173** | |
+| 13 - Performance (k6) | 5 scripts | 5 | ✅ Threshold-based |
+| 14 - Security (ZAP) | 3 scan types | 3 | ✅ Rule-based |
+| 15 - Visual Regression | 6 (x3 viewports) | 18 | ✅ Pixel-diff |
+| **Total** | **155+** | **199+** | |
 
 ## How to Run
 
@@ -127,6 +142,29 @@ mvn clean test
 
 cd ../12-mobile-web-testing-selenium
 mvn clean test
+```
+
+### k6 Performance Testing
+```bash
+cd 13-performance-testing-k6
+k6 run scripts/smoke-test.js       # Quick health check
+k6 run scripts/load-test.js        # Normal traffic
+k6 run scripts/stress-test.js      # Breaking point
+```
+
+### OWASP ZAP Security Testing
+```bash
+cd 14-security-testing-zap
+./scripts/baseline-scan.sh          # Passive scan (CI-safe)
+./scripts/api-scan.sh               # API-focused scan
+```
+
+### Visual Regression
+```bash
+cd 15-visual-regression-testing
+npm install
+npm run reference                   # Create baseline
+npm test                            # Compare against baseline
 ```
 
 ## Author

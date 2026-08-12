@@ -1,0 +1,10 @@
+[
+  {
+    "name": "session-username",
+    "value": "standard_user",
+    "domain": "www.saucedemo.com",
+    "path": "/",
+    "httpOnly": false,
+    "secure": false
+  }
+]

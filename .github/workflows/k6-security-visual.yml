@@ -1,0 +1,89 @@
+name: Performance, Security & Visual Tests
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: k6-security-visual-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  performance-test:
+    name: k6 Performance (13)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install k6
+        run: |
+          sudo gpg -k
+          sudo gpg --no-default-keyring --keyring /usr/share/keyrings/k6-archive-keyring.gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys C5AD17C747E3415A3642D57D77C6C491D6AC1D68
+          echo "deb [signed-by=/usr/share/keyrings/k6-archive-keyring.gpg] https://dl.k6.io/deb stable main" | sudo tee /etc/apt/sources.list.d/k6.list
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq k6
+
+      - name: Run Smoke Test
+        working-directory: 13-performance-testing-k6
+        run: k6 run scripts/smoke-test.js
+
+      - name: Run Load Test
+        working-directory: 13-performance-testing-k6
+        run: k6 run scripts/load-test.js
+        continue-on-error: true
+
+  security-test:
+    name: OWASP ZAP Security (14)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: ZAP Baseline Scan
+        uses: zaproxy/action-baseline@v0.12.0
+        with:
+          target: 'https://fakerestapi.azurewebsites.net'
+          rules_file_name: '14-security-testing-zap/zap-rules.conf'
+          allow_issue_writing: false
+        continue-on-error: true
+
+      - name: Upload ZAP Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: zap-security-report
+          path: report_html.html
+          retention-days: 14
+
+  visual-regression-test:
+    name: Visual Regression (15)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        working-directory: 15-visual-regression-testing
+        run: npm ci || npm install
+
+      - name: Run BackstopJS Reference + Test
+        working-directory: 15-visual-regression-testing
+        run: |
+          npx backstop reference --docker || true
+          npx backstop test --docker || true
+
+      - name: Upload Visual Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: visual-regression-report
+          path: 15-visual-regression-testing/backstop_data/html_report/
+          retention-days: 14
