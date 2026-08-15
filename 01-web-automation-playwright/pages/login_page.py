@@ -9,7 +9,7 @@ class LoginPage(BasePage):
     # ============================================================
     # XPath Locators
     # ============================================================
-    XPATH_USERNAME = '//input[@type="username"]'
+    XPATH_USERNAME = '//input[@name="username"]'
     XPATH_PASSWORD = '//input[@type="password"]'
     XPATH_LOGIN_BUTTON = '//span[@class="btn-text"]'
     XPATH_ERROR_MESSAGE = '//div[contains(@class,"iziToast") and contains(@class,"iziToast-color-red")]'

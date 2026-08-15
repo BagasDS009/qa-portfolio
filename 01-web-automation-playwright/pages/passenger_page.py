@@ -22,6 +22,7 @@ class PassengerPage(BasePage):
     XPATH_PASSENGER_ID_TYPE = "//select[@id='penumpang_title1' and @name='penumpang_title[]']"
     XPATH_PASSENGER_ID_NUMBER_TYPE = "//select[@id='penumpang_tandapengenal1' and @name='penumpang_tandapengenal[]']"
     XPATH_PASSENGER_ID_NUMBER = "//input[@id='penumpang_notandapengenal1' and @name='penumpang_notandapengenal[]']"
+    XPATH_PASSENGER_PHONE = "//input[@id='penumpang_nohp1' and @name='penumpang_nohp[]']"
 
     # XPath Locators - Actions
     XPATH_CONTINUE_BUTTON = "//button[@id='bayar' and @name='submitbutton']"

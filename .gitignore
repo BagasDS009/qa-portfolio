@@ -42,3 +42,7 @@ reports/
 # Cypress
 cypress/videos/
 cypress/screenshots/
+
+# agent
+.kiro
+agent copy

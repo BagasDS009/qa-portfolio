@@ -9,8 +9,10 @@ from datetime import datetime
 
 import pytest
 from playwright.sync_api import sync_playwright, Page, Browser
-from playwright_stealth import Stealth
+from playwright_stealth import stealth_sync
 
+# Config import triggers load_dotenv() — must come before test_data
+from utils.config import Config
 from pages.login_page import LoginPage
 from tests.test_data import (
     CONTACT_PERSON,
@@ -20,12 +22,12 @@ from tests.test_data import (
 
 
 # ============================================================================
-# Configuration (from .env)
+# Configuration (from .env via Config)
 # ============================================================================
 
-BASE_URL = os.getenv("BASE_URL", "https://booking.kai.id")
-VALID_USER = os.getenv("KAI_USER", "testuser@example.com")
-VALID_PASSWORD = os.getenv("KAI_PASSWORD", "TestPassword123!")
+BASE_URL = Config.BASE_URL
+VALID_USER = Config.USERNAME
+VALID_PASSWORD = Config.PASSWORD
 
 
 # ============================================================================
@@ -44,13 +46,14 @@ def pytest_addoption(parser):
 @pytest.fixture
 def browser():
     """Launch a fresh browser for each test, then close it completely."""
-    import os
-    # CI environment = headless, local = headed
+    # CI environment = headless, local = use Config setting
     is_ci = os.getenv("CI", "false").lower() == "true"
+    headless = is_ci or Config.HEADLESS
 
     with sync_playwright() as p:
         bwr = p.chromium.launch(
-            headless=is_ci,
+            headless=headless,
+            slow_mo=Config.SLOWMO,
             args=[
                 "--disable-blink-features=AutomationControlled",
                 "--disable-infobars",
@@ -81,7 +84,7 @@ def page(browser: Browser):
     pg = context.new_page()
 
     # Apply stealth
-    Stealth().apply_stealth_sync(pg)
+    stealth_sync(pg)
 
     # Initial delay before navigating (look human)
     pg.wait_for_timeout(random.randint(2000, 4000))

@@ -1,7 +1,7 @@
 """Base Page class with common methods and human-like behavior."""
 
 import random
-from playwright.sync_api import Page, expect
+from playwright.sync_api import Page
 
 
 class BasePage:
