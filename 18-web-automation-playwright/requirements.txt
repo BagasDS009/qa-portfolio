@@ -1,0 +1,10 @@
+# Core
+playwright>=1.49.0
+pytest>=8.2.0
+pytest-playwright>=0.5.2
+
+# Reporting
+allure-pytest>=2.13.0
+
+# Utilities
+python-dotenv>=1.0.1
