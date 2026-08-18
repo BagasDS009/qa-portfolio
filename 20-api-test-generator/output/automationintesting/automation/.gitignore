@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Virtual environment
+.venv/
+venv/
+env/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Reports
+reports/allure-results/
+reports/allure-report/
+
+# Environment
+config/.env.local
+config/.env.prod
+.env
+
+# OS
+.DS_Store
+Thumbs.db

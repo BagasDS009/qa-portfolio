@@ -1,0 +1,10 @@
+playwright>=1.48.0
+pytest>=8.3.0
+pytest-playwright>=0.5.2
+playwright-stealth>=1.0.6
+allure-pytest>=2.13.5
+allure-combine>=1.0.11
+python-dotenv>=1.0.1
+pytest-rerunfailures>=14.0
+Pillow>=10.0.0
+numpy>=1.24.0
